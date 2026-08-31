@@ -8,7 +8,7 @@ from email.mime.application import MIMEApplication
 from flask import Flask, render_template, request, send_from_directory
 from data_manager import log_contact_message, LOG_FILE
 
-# Load environment configuration variables straight from the local file system
+
 load_dotenv()
 
 app = Flask(__name__)
@@ -25,13 +25,13 @@ def send_notification_email(downloader_name, downloader_email, trigger_type="CV 
     utilizing your original, proven connection.sendmail() logic.
     """
     try:
-        # 1. Create a Multipart Container to hold text and your attachment together
+        # Create a Multipart Container to hold text and your attachment together
         msg = MIMEMultipart()
         msg["Subject"] = f"Website Alert: {trigger_type}!"
         msg["From"] = MY_EMAIL
         msg["To"] = MY_EMAIL
 
-        # 2. Define the clear body message text
+        # Define the body message text
         body_content = (
             f"Hello Raheel,\n\n"
             f"Your portfolio portal recorded a new interaction:\n\n"
@@ -45,7 +45,7 @@ def send_notification_email(downloader_name, downloader_email, trigger_type="CV 
         )
         msg.attach(MIMEText(body_content, "plain"))
 
-        # 3. ATTACHMENT SUBSYSTEM: Safely load and attach the local log file
+        # ATTACHMENT SUBSYSTEM
         if os.path.isfile(LOG_FILE):
             with open(LOG_FILE, "rb") as file_asset:
                 attachment_part = MIMEApplication(file_asset.read(), Name=os.path.basename(LOG_FILE))
@@ -54,7 +54,6 @@ def send_notification_email(downloader_name, downloader_email, trigger_type="CV 
             msg.attach(attachment_part)
             print("📎 Local log backup file payload mounted cleanly onto MIME stream layer.")
 
-        # 4. YOUR ORIGINAL WORKING CONNECTION METHOD
         with smtplib.SMTP("smtp.gmail.com", 587) as connection:
             connection.starttls()
             connection.login(MY_EMAIL, MY_PASSWORD)
@@ -94,13 +93,13 @@ def download_cv():
         name = request.form.get('name')
         email = request.form.get('email')
 
-        # 1. Log the downloader into your local database text row tracker
+        # Log the downloader into your local database text row tracker
         log_contact_message(name, email, "Triggered direct download of curriculum vitae PDF.")
 
-        # 2. Fire the background email pipeline with the database attachment file
+        # Fire the background email pipeline with the database attachment file
         send_notification_email(name, email, trigger_type="CV Download Tracking")
 
-        # 3. Serve the file block back to browser client instantly
+        # Serve the file block back to browser client instantly
         return send_from_directory(directory='static', path='Raheel_Ali_CV.pdf', as_attachment=True)
 
     return render_template('download_cv.html')
@@ -114,10 +113,10 @@ def contact():
         visitor_email = request.form.get('email')
         visitor_message = request.form.get('message')
 
-        # 1. Store contact context inside local system tracking logs database
+        # Store contact context inside local system tracking logs database
         log_success = log_contact_message(visitor_name, visitor_email, visitor_message)
 
-        # 2. Fire identical framework module package dispatch carrying attached logs database
+        # Fire identical framework module package dispatch carrying attached logs database
         send_notification_email(visitor_name, visitor_email, trigger_type="New Website Contact Message")
 
         if log_success:
