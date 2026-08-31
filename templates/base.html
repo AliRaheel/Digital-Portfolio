@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raheel Ali | CV</title>
+    <link rel="stylesheet" href="https://cloudflare.com">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- SIDEBAR PANEL -->
+        <nav class="sidebar">
+
+            <label class="switch theme-top-toggle">
+                <input type="checkbox" id="theme-checkbox">
+                <span class="slider round"></span>
+            </label>
+
+            <div class="sidebar-header">
+                <img src="{{ url_for('static', filename='images/me.jpg') }}" alt="Raheel Ali" class="profile-img"/>
+                <h2>Raheel Ali</h2>
+                <p class="tagline">Technical Support & Systems Engineer</p>
+
+                <div class="sidebar-contact">
+                    <a class="sidebar-location" href="https://maps.app.goo.gl/C6b3KnV4zzGPBjoA7" target="_blank">📍 Rovato (BS), Italy</a>
+                    <p class="telephone">📞 <a href="tel:+393202216916">+39 320 221 6916</a></p>
+                    <p class="sidebar-linkedin">
+                        <!-- 🌟 NEW: Pure embedded SVG LinkedIn icon (Firewall-Proof!) -->
+                        <svg class="linkedin-svg" xmlns="http://w3.org" viewBox="0 0 448 512">
+                            <path d="M416 32H31.9C14.3 32 0 46.1 0 63.7V448c0 17.6 14.3 32 31.9 32H416c17.6 0 32-14.3 32-31.9V63.7c0-17.6-14.3-32-31.9-32zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"/>
+                        </svg>
+
+                        <a href="https://www.linkedin.com/in/alirhl/" target="_blank">LinkedIn Profile</a>
+                    </p>
+                </div>
+            </div>
+
+            <div class="sidebar-links">
+                <a href="/">🏠 Home</a>
+                <a href="/experience">💼 Experience</a>
+                <a href="/statement">📝 My Statement</a>
+                <a href="/contact" class="nav-contact">🖂 Contact Me</a>
+                <a href="/download-cv" class="download-btn nav-download">📥 Download CV</a>
+            </div>
+
+            <div class="sidebar-footer">
+                <p>Code & Design by Raheel Ali © 2026<br>Built completely in Python & Flask</p>
+            </div>
+        </nav>
+
+
+        <main class="main-content">
+            <div class="content-container">
+                {% block content %}{% endblock %}
+            </div>
+
+            <footer class="mobile-footer">
+                <a href="/contact" class="footer-btn contact-btn">🖂 Contact Me</a>
+                <a href="/download-cv" class="footer-btn download-btn">📥 Download CV</a>
+            </footer>
+        </nav>
+
+    </div>
+
+    <script>
+        const themeCheckbox = document.getElementById('theme-checkbox');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+
+        if (currentTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeCheckbox.checked = true;
+        }
+
+        themeCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+
+</body>
+</html>

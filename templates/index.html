@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <!-- Welcome Section -->
+    <div class="welcome-hero">
+        <h1>Welcome to my Digital Portfolio! 👋</h1>
+        <h3>Raheel Ali - Technical Support & Systems Engineer</h3>
+
+        <div class="about-me-story">
+            <p>
+                I am a <strong>Technical Support and Systems Engineer</strong> specialized in advanced infrastructure diagnostics,
+                complex root-cause analysis, and writing cross-platform backend automation scripts across Linux and Windows environments.
+                With an M.Sc. in Computer and Communication Network Engineering from <em>Politecnico di Torino</em>, I have spent
+                my career troubleshooting intricate technical puzzles within high-stakes corporate and industrial environments.
+            </p>
+            <p>
+                My professional experience at <strong>Antares Vision Group</strong> and handling high-priority infrastructure projects
+                with <strong>Alascom s.r.l</strong> has taught me that running reliable systems requires excellent critical thinking,
+                empathetic customer communication, and deep technical diagnostic skills. I excel at diving into complex application
+                logs using index search tools like <strong>Elasticsearch</strong>, optimizing operational data with <strong>MySQL</strong>
+                and <strong>MS SQL Server</strong>, and managing enterprise infrastructures running on <strong>Red Hat Enterprise Linux (RHEL)</strong>.
+            </p>
+            <p>
+                My recent completion of the intensive <strong>100 Days of Code™ Python Bootcamp</strong> reflects my dedication to
+                bringing modern software automation into systems engineering. I combine my foundational IT support experience and database query optimization
+                with Python, Bash, and Windows Batch scripting. This allows me to develop robust backend utilities that automatically parse server logs,
+                monitor system health, and eliminate repetitive support tasks to maximize infrastructure uptime.
+            </p>
+        </div>
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Professional Specializations Timeline -->
+    <h2>📜 Technical Certifications & Specializations</h2>
+    <p>Continuous learning and mastery of modern automation and data storage frameworks:</p>
+
+    <div class="certification-timeline">
+        <!-- Python Bootcamp -->
+        <div class="cert-card gold-border">
+            <div class="cert-date">August 2026</div>
+            <div class="cert-details">
+                <h5>100 Days of Code™: The Complete Python Pro Bootcamp</h5>
+                <p>Advanced backend programming, object-oriented design, programmatic data parsing, and building customized network diagnostic scripts.</p>
+                <div class="cert-actions">
+                    <span class="cert-tag python-bg">Python Pro</span>
+                    <!-- 🌟 Clickable Certificate Image Link -->
+                    <a href="{{ url_for('static', filename='images/python_cert.jpg') }}"
+                       class="view-cert-btn" target="_blank">🔗 View Certificate</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- SQL Server -->
+        <div class="cert-card standard-border">
+            <div class="cert-date">April 2024</div>
+            <div class="cert-details">
+                <h5>Complete Microsoft SQL Server Masterclass: Beginner to Expert</h5>
+                <p>Relational database management, deep query optimization, schema architecture, and handling complex data analytics alongside my active MySQL and Elasticsearch skills.</p>
+                <div class="cert-actions">
+                    <span class="cert-tag sql-bg">MS SQL Server</span>
+                    <a href="{{ url_for('static', filename='images/MS_SQL_cert.jpg') }}"
+                       class="view-cert-btn" target="_blank">🔗 View Certificate</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Batch Scripting -->
+        <div class="cert-card standard-border">
+            <div class="cert-date">April 2024</div>
+            <div class="cert-details">
+                <h5>Batch Scripting Made Easy: Step-by-Step Guide for Beginners</h5>
+                <p>Windows OS administration, environment management, and writing rapid automation command scripts (.bat) to augment my core Linux Bash skills.</p>
+                <div class="cert-actions">
+                    <span class="cert-tag batch-bg">Windows Automation</span>
+                    <a href="{{ url_for('static', filename='images/Batch_Scripting_cert.jpg') }}"
+                       class="view-cert-btn" target="_blank">🔗 View Certificate</a>
+                </div>
+            </div>
+        </div>
+
+         <div class="cert-card standard-border">
+            <div class="cert-date"> October 2020</div>
+            <div class="cert-details">
+                <h5>RH066x: Fundamentals of Red Hat Enterprise Linux</h5>
+                <p>Core system administration skills, handling corporate command-line workflows, file system management, and secure enterprise Linux configuration.</p>
+                <div class="cert-actions">
+                    <span class="cert-tag rhel-bg">Red Hat Linux</span>
+                    <a href="{{ url_for('static', filename='images/Red_Hat_Enterprise_Linux_cert.jpg') }}"
+                       class="view-cert-btn" target="_blank">🔗 View Certificate</a>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <hr class="section-divider">
+
+    <!-- Core Pillars / Capabilities -->
+    <h2>🛠️ Core Engineering Areas</h2>
+    <div class="skills-grid">
+        <div class="skill-card">
+            <div class="card-icon">⚙️</div>
+            <h4>Cross-Platform Automation</h4>
+            <p>Writing smart automation code utilizing <strong>Python</strong>, <strong>Bash</strong>, and Windows <strong>Batch Scripting</strong> to optimize workflows and reduce server overhead.</p>
+        </div>
+        <div class="skill-card">
+            <div class="card-icon">🖥️</div>
+            <h4>Systems & NOC Infrastructure</h4>
+            <p>Deploying Linux/Windows environments, VMware virtualization management, and remote customer systems engineering.</p>
+        </div>
+        <div class="skill-card">
+            <div class="card-icon">🗄️</div>
+            <h4>Enterprise Data Management</h4>
+            <p>Deep analytical diagnostics using relational storage (<strong>MySQL</strong>, <strong>MS SQL Server</strong>) and high-velocity index search engines (<strong>Elasticsearch</strong>).</p>
+        </div>
+    </div>
+
+{% endblock %}

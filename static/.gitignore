@@ -1,0 +1,29 @@
+# Local secret system assets
+.env
+instance/
+.web_tokens_cache
+
+# PyCharm workspace configurations
+.idea/
+*.iws
+out/
+
+# Python caching infrastructure files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mynotes
+
+# Virtual Environment workspace folders
+venv/
+ENV/
+env/
+.venv/
+
+# Operating System specific tracking noise
+Thumbs.db
+.DS_Store
+
+# Local visitor connection logs database file
+contact_messages.csv
