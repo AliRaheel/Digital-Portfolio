@@ -1,5 +1,6 @@
 import os
 import smtplib
+import threading
 from dotenv import load_dotenv
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -18,57 +19,57 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 MY_EMAIL = os.environ.get('MY_EMAIL')
 MY_PASSWORD = os.environ.get('MY_PASSWORD')
 
+def email_worker_task(msg_string):
+    """Silent background worker thread that executes the secure SMTP network delivery."""
+    try:
+        # Use port 465 SSL connection
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as connection:
+            connection.login(MY_EMAIL, MY_PASSWORD)
+            connection.sendmail(MY_EMAIL, MY_EMAIL, msg_string)
+        print("✉️ Background worker dispatched email layout to your inbox tray successfully!")
+    except Exception as e:
+        # Prevents app crashes: Fails silently in the logs without disrupting the user
+        print(f"⚠️ Background Mailer Network Block Alert: {e}")
+
 
 def send_notification_email(downloader_name, downloader_email, trigger_type="CV Download"):
-    """
-    Dispatches a system alert with contact_messages.csv attached,
-    utilizing your original, proven connection.sendmail() logic.
-    """
+    """Packs the multipart mail container and spawns an independent non-blocking thread."""
     try:
-        # Create a Multipart Container to hold text and your attachment together
         msg = MIMEMultipart()
-        msg["Subject"] = f"Website Alert: {trigger_type}!"
+        msg["Subject"] = f"🚨 {trigger_type} Alert: {downloader_name}"
         msg["From"] = MY_EMAIL
         msg["To"] = MY_EMAIL
 
-        # Define the body message text
         body_content = (
             f"Hello Raheel,\n\n"
-            f"Your portfolio portal recorded a new interaction:\n\n"
-            f"Type: {trigger_type}\n"
-            f"Name: {downloader_name}\n"
-            f"Email: {downloader_email}\n\n"
-            f"The complete system connection log database backup file (.csv) "
-            f"has been attached to this email notice.\n\n"
-            f"Best regards,\n"
-            f"Your Digital Portfolio App 🤖"
+            f"Your portfolio dashboard recorded a transaction:\n\n"
+            f"📁 Type: {trigger_type}\n"
+            f"👤 Name: {downloader_name}\n"
+            f"📧 Email: {downloader_email}\n\n"
+            f"The connection log database backup file (.csv) is attached.\n\n"
+            f"Best regards,\nYour Python Web Engine App 🤖"
         )
         msg.attach(MIMEText(body_content, "plain"))
 
-        # ATTACHMENT SUBSYSTEM
+        # Attach local CSV log database file if it exists
         if os.path.isfile(LOG_FILE):
             with open(LOG_FILE, "rb") as file_asset:
                 attachment_part = MIMEApplication(file_asset.read(), Name=os.path.basename(LOG_FILE))
-
             attachment_part['Content-Disposition'] = f'attachment; filename="{os.path.basename(LOG_FILE)}"'
             msg.attach(attachment_part)
-            print("📎 Local log backup file payload mounted cleanly onto MIME stream layer.")
+            print("📎 Local log backup file payload mounted onto MIME stream layer.")
 
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as connection:
-            connection.starttls()
-            connection.login(MY_EMAIL, MY_PASSWORD)
-            connection.sendmail(
-                from_addr=MY_EMAIL,
-                to_addrs=MY_EMAIL,
-                msg=msg.as_string()
-            )
+        # THE CLOUD RESOLUTION: Spawn a parallel thread to execute the network request
+        # This returns control to Flask immediately so the page does not freeze!
+        email_thread = threading.Thread(target=email_worker_task, args=(msg.as_string(),))
+        email_thread.daemon = True  # Allows the worker to execute independently
+        email_thread.start()
 
-        print("✉️ Notification alert with attachment dispatched successfully via sendmail!")
+        print("🚀 Background thread spawned. Returning execution control to web service instantly.")
         return True
     except Exception as e:
-        print(f"❌ Failed to dispatch system email alert bundle: {e}")
+        print(f"❌ Failed to initialize background email pipeline: {e}")
         return False
-
 
 # --- ROUTES ---
 
@@ -93,13 +94,14 @@ def download_cv():
         name = request.form.get('name')
         email = request.form.get('email')
 
-        # Log the downloader into your local database text row tracker
+        # Append the downloader transaction details to the local system tracker
         log_contact_message(name, email, "Triggered direct download of curriculum vitae PDF.")
 
-        # Fire the background email pipeline with the database attachment file
+        # Fires the non-blocking background threading alert module
+        # This handshakes with port 465 silently without delaying the user!
         send_notification_email(name, email, trigger_type="CV Download Tracking")
 
-        # Serve the file block back to browser client instantly
+        # Serve the file block back to the recruiter's browser instantly
         return send_from_directory(directory='static', path='Raheel_Ali_CV.pdf', as_attachment=True)
 
     return render_template('download_cv.html')
@@ -113,17 +115,17 @@ def contact():
         visitor_email = request.form.get('email')
         visitor_message = request.form.get('message')
 
-        # Store contact context inside local system tracking logs database
+        # Store the user parameters inside the local CSV spreadsheet row
         log_success = log_contact_message(visitor_name, visitor_email, visitor_message)
 
-        # Fire identical framework module package dispatch carrying attached logs database
+        # Fire the background email alert module
         send_notification_email(visitor_name, visitor_email, trigger_type="New Website Contact Message")
 
+        # show the success banner if the local Database write succeede!
         if log_success:
             message_sent = True
 
     return render_template('contact.html', message_sent=message_sent)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
