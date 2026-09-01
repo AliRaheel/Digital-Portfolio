@@ -54,7 +54,7 @@ def send_notification_email(downloader_name, downloader_email, trigger_type="CV 
             msg.attach(attachment_part)
             print("📎 Local log backup file payload mounted cleanly onto MIME stream layer.")
 
-        with smtplib.SMTP("smtp.gmail.com", 465) as connection:
+        with smtplib.SMTP_SSL(":smtp.gmail.com", 465) as connection:
             connection.starttls()
             connection.login(MY_EMAIL, MY_PASSWORD)
             connection.sendmail(
