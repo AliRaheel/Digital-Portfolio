@@ -42,7 +42,7 @@ def email_worker_task(downloader_name, downloader_email, trigger_type):
             )
         }
 
-        # BYPASSES FIREWALLS: This is a standard HTTPS request over port 443!
+        # 🌟 BYPASSES FIREWALLS: This is a standard HTTPS request over port 443!
         response = requests.post(url, auth=auth, data=data, timeout=10)
 
         if response.status_code == 200:
@@ -55,42 +55,17 @@ def email_worker_task(downloader_name, downloader_email, trigger_type):
 
 
 def send_notification_email(downloader_name, downloader_email, trigger_type="CV Download"):
-    """Packs the multipart mail container and spawns an independent non-blocking thread."""
+    """Spawns an independent non-blocking thread to offload network delivery from the route."""
     try:
-        msg = MIMEMultipart()
-        msg["Subject"] = f"🚨 {trigger_type} Alert: {downloader_name}"
-        msg["From"] = MY_EMAIL
-        msg["To"] = MY_EMAIL
-
-        body_content = (
-            f"Hello Raheel,\n\n"
-            f"Your portfolio dashboard recorded a transaction:\n\n"
-            f"📁 Type: {trigger_type}\n"
-            f"👤 Name: {downloader_name}\n"
-            f"📧 Email: {downloader_email}\n\n"
-            f"The connection log database backup file (.csv) is attached.\n\n"
-            f"Best regards,\nYour Python Web Engine App 🤖"
-        )
-        msg.attach(MIMEText(body_content, "plain"))
-
-        # Attach local CSV log database file if it exists
-        if os.path.isfile(LOG_FILE):
-            with open(LOG_FILE, "rb") as file_asset:
-                attachment_part = MIMEApplication(file_asset.read(), Name=os.path.basename(LOG_FILE))
-            attachment_part['Content-Disposition'] = f'attachment; filename="{os.path.basename(LOG_FILE)}"'
-            msg.attach(attachment_part)
-            print("📎 Local log backup file payload mounted onto MIME stream layer.")
-
-        # THE CLOUD RESOLUTION: Spawn a parallel thread to execute the network request
-        # This returns control to Flask immediately so the page does not freeze!
+        # Spawn the parallel thread to execute the Mailgun HTTP Web request
         email_thread = threading.Thread(
             target=email_worker_task,
             args=(downloader_name, downloader_email, trigger_type)
         )
-        email_thread.daemon = True  # Allows the worker to execute independently
+        email_thread.daemon = True
         email_thread.start()
 
-        print("🚀 Background thread spawned. Returning execution control to web service instantly.")
+        print("🚀 Background Mailgun thread spawned successfully. Returning control to route instantly.")
         return True
     except Exception as e:
         print(f"❌ Failed to initialize background email pipeline: {e}")
