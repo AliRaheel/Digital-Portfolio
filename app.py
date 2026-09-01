@@ -83,7 +83,10 @@ def send_notification_email(downloader_name, downloader_email, trigger_type="CV 
 
         # THE CLOUD RESOLUTION: Spawn a parallel thread to execute the network request
         # This returns control to Flask immediately so the page does not freeze!
-        email_thread = threading.Thread(target=email_worker_task, args=(msg.as_string(),))
+        email_thread = threading.Thread(
+            target=email_worker_task,
+            args=(downloader_name, downloader_email, trigger_type)
+        )
         email_thread.daemon = True  # Allows the worker to execute independently
         email_thread.start()
 
