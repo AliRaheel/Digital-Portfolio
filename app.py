@@ -25,7 +25,7 @@ MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN") # e.g., sandbox123.mailgun.org
 def email_worker_task(downloader_name, downloader_email, trigger_type):
     """Sends email notifications via standard HTTP web ports to easily bypass cloud firewalls."""
     try:
-        url = f"https://mailgun.net{MAILGUN_DOMAIN}/messages"
+        url = f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages"
         auth = ("api", MAILGUN_API_KEY)
 
         data = {
