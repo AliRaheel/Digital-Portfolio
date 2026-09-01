@@ -29,7 +29,7 @@ def email_worker_task(downloader_name, downloader_email, trigger_type):
         auth = ("api", MAILGUN_API_KEY)
 
         data = {
-            "from": f"Portfolio Web Engine <mailgun@{MAILGUN_DOMAIN}>",
+            "from": f"Portfolio Web Engine <postmaster@{MAILGUN_DOMAIN}>",
             "to": [MY_EMAIL],
             "subject": f"🚨 {trigger_type} Alert: {downloader_name}",
             "text": (
@@ -42,7 +42,7 @@ def email_worker_task(downloader_name, downloader_email, trigger_type):
             )
         }
 
-        # 🌟 BYPASSES FIREWALLS: This is a standard HTTPS request over port 443!
+        # BYPASSES FIREWALLS: This is a standard HTTPS request over port 443!
         response = requests.post(url, auth=auth, data=data, timeout=10)
 
         if response.status_code == 200:
