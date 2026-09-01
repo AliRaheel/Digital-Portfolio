@@ -23,7 +23,10 @@ MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN") # e.g., sandbox123.mailgun.org
 
 
 def email_worker_task(downloader_name, downloader_email, trigger_type):
-    """Sends email notifications via standard HTTP web ports to easily bypass cloud firewalls."""
+    """
+   Sends email alerts and attaches the local contact_messages.csv log database
+   using Mailgun's HTTPS Web API over port 443 to bypass cloud firewall blocks.
+   """
     try:
         url = f"https://api.mailgun.net/v3/{MAILGUN_DOMAIN}/messages"
         auth = ("api", MAILGUN_API_KEY)
@@ -42,16 +45,30 @@ def email_worker_task(downloader_name, downloader_email, trigger_type):
             )
         }
 
-        # BYPASSES FIREWALLS: This is a standard HTTPS request over port 443!
-        response = requests.post(url, auth=auth, data=data, timeout=10)
+        # THE ATTACHMENT FIX: Read the local CSV file directly into Mailgun's files tuple parameter
+        files = {}
+        # Make sure your data_manager path is accessible (usually 'contact_messages.csv')
+        log_file_path = "contact_messages.csv"
+
+        if os.path.isfile(log_file_path):
+            # Open the tracking file in raw binary ('rb') mode
+            files = {"attachment": (os.path.basename(log_file_path), open(log_file_path, "rb"))}
+            print("📎 Local log backup file payload mounted onto Mailgun HTTP form-data.")
+
+        # 🚀 BYPASSES FIREWALLS: Standard HTTPS POST request over web port 443
+        response = requests.post(url, auth=auth, data=data, files=files, timeout=15)
+
+        # Cleanly close the file handler stream right after the transmission maps out
+        if files:
+            files["attachment"].close()
 
         if response.status_code == 200:
-            print("✉️ API Web Dispatcher successfully delivered email straight to your inbox!")
+            print("✉️ Mailgun API successfully delivered the email alert with the CSV attachment!")
         else:
-            print(f"⚠️ Mailgun API rejected request: {response.text}")
+            print(f"⚠️ Mailgun API rejected delivery request: {response.text}")
 
     except Exception as e:
-        print(f"❌ Web API pipeline error: {e}")
+        print(f"❌ Background Web API pipeline error: {e}")
 
 
 def send_notification_email(downloader_name, downloader_email, trigger_type="CV Download"):
