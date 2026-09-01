@@ -1,11 +1,11 @@
 import os
 import smtplib
 import threading
+import requests
 from dotenv import load_dotenv
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
-# from email.message import EmailMessage
 from flask import Flask, render_template, request, send_from_directory
 from data_manager import log_contact_message, LOG_FILE
 
@@ -18,18 +18,40 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 MY_EMAIL = os.environ.get('MY_EMAIL')
 MY_PASSWORD = os.environ.get('MY_PASSWORD')
+MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY")
+MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN") # e.g., sandbox123.mailgun.org
 
-def email_worker_task(msg_string):
-    """Silent background worker thread that executes the secure SMTP network delivery."""
+
+def email_worker_task(downloader_name, downloader_email, trigger_type):
+    """Sends email notifications via standard HTTP web ports to easily bypass cloud firewalls."""
     try:
-        # Use port 465 SSL connection
-        with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as connection:
-            connection.login(MY_EMAIL, MY_PASSWORD)
-            connection.sendmail(MY_EMAIL, MY_EMAIL, msg_string)
-        print("✉️ Background worker dispatched email layout to your inbox tray successfully!")
+        url = f"https://mailgun.net{MAILGUN_DOMAIN}/messages"
+        auth = ("api", MAILGUN_API_KEY)
+
+        data = {
+            "from": f"Portfolio Web Engine <mailgun@{MAILGUN_DOMAIN}>",
+            "to": [MY_EMAIL],
+            "subject": f"🚨 {trigger_type} Alert: {downloader_name}",
+            "text": (
+                f"Hello Raheel,\n\n"
+                f"Your portfolio dashboard recorded a transaction:\n\n"
+                f"📁 Type: {trigger_type}\n"
+                f"👤 Name: {downloader_name}\n"
+                f"📧 Email: {downloader_email}\n\n"
+                f"Best regards,\nYour Python Web Engine App 🤖"
+            )
+        }
+
+        # BYPASSES FIREWALLS: This is a standard HTTPS request over port 443!
+        response = requests.post(url, auth=auth, data=data, timeout=10)
+
+        if response.status_code == 200:
+            print("✉️ API Web Dispatcher successfully delivered email straight to your inbox!")
+        else:
+            print(f"⚠️ Mailgun API rejected request: {response.text}")
+
     except Exception as e:
-        # Prevents app crashes: Fails silently in the logs without disrupting the user
-        print(f"⚠️ Background Mailer Network Block Alert: {e}")
+        print(f"❌ Web API pipeline error: {e}")
 
 
 def send_notification_email(downloader_name, downloader_email, trigger_type="CV Download"):
